@@ -1,37 +1,15 @@
 (() => {
   "use strict";
 
-  // Keep in sync with PROVIDER_TOKEN in index.html
-  const PROVIDER_TOKEN = "";
-  const APP_ID = "6789275579";
-  const STORE_HTTPS = `https://apps.apple.com/us/app/landlock/id${APP_ID}`;
-
-  const params = new URLSearchParams(window.location.search);
-
-  function campaignToken() {
-    const raw =
-      params.get("ct") ||
-      params.get("utm_campaign") ||
-      params.get("c") ||
-      "instagram_bio";
-    return (
-      String(raw)
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "_")
-        .replace(/[^a-z0-9_-]/g, "")
-        .slice(0, 40) || "instagram_bio"
-    );
-  }
-
-  function httpsStoreUrl() {
-    const url = new URL(STORE_HTTPS);
-    url.searchParams.set("mt", "8");
-    url.searchParams.set("ct", campaignToken());
-    if (PROVIDER_TOKEN) url.searchParams.set("pt", PROVIDER_TOKEN);
-    return url.toString();
-  }
-
   const storeLink = document.getElementById("store-link");
-  if (storeLink) storeLink.href = httpsStoreUrl();
+  const hint = document.getElementById("hint");
+  const href =
+    window.__LANDLOCK_STORE_URL__ ||
+    "https://apps.apple.com/us/app/landlock/id6789275579?mt=8&ct=instagram_bio";
+
+  if (storeLink) storeLink.href = href;
+
+  if (document.documentElement.classList.contains("in-app") && hint) {
+    hint.textContent = "Tap Get the app to open the App Store";
+  }
 })();

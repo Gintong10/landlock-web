@@ -34,9 +34,8 @@ body {
   background: var(--cream);
 }
 
-html.ios-redirect .page {
-  opacity: 0.4;
-}
+/* Keep the page fully visible. In-app browsers often block redirects; a
+   faded page looked like a blank white screen on Instagram. */
 
 .page {
   min-height: 100dvh;
