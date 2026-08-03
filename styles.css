@@ -1,12 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550;9..144,700&family=Manrope:wght@500;600;700&display=swap");
-
 :root {
+  --cream: #f3f3ec;
   --pine: #2b3c31;
   --sage: #5f7e68;
-  --cream: #f3f3ec;
   --gold: #b79346;
-  --ink: #1e2a22;
-  --muted: rgba(43, 60, 49, 0.68);
+  --surface: rgba(255, 255, 255, 0.6);
+  --muted: rgba(43, 60, 49, 0.7);
 }
 
 *,
@@ -23,128 +21,200 @@ body {
 
 body {
   min-height: 100dvh;
-  color: var(--ink);
-  font-family: "Manrope", system-ui, sans-serif;
-  background:
-    radial-gradient(900px 520px at 85% -10%, rgba(95, 126, 104, 0.28), transparent 60%),
-    radial-gradient(720px 480px at -10% 90%, rgba(183, 147, 70, 0.18), transparent 55%),
-    linear-gradient(165deg, #f7f6ef 0%, var(--cream) 45%, #e8ebe4 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.25rem;
-}
-
-html.ios-redirect body {
+  color: var(--pine);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "SF Pro Display",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
   background: var(--cream);
+  display: flex;
+  flex-direction: column;
 }
 
-html.ios-redirect .shell {
-  opacity: 0.55;
+html.ios-redirect .page {
+  opacity: 0.45;
 }
 
-.shell {
-  width: min(100%, 26rem);
+.page {
+  flex: 1;
+  width: min(100%, 28rem);
+  margin: 0 auto;
+  padding: 12vh 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: fade-up 0.55s ease both;
 }
 
-@keyframes rise {
+@keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: none;
   }
-}
-
-.mark {
-  width: 4.5rem;
-  height: 4.5rem;
-  margin: 0 auto 1.5rem;
-  border-radius: 1.25rem;
-  background:
-    radial-gradient(circle at 30% 25%, rgba(243, 243, 236, 0.35), transparent 45%),
-    linear-gradient(145deg, #3d5546 0%, var(--pine) 55%, #1f2d25 100%);
-  box-shadow:
-    0 18px 40px rgba(43, 60, 49, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  display: grid;
-  place-items: center;
-  animation: mark-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
-}
-
-@keyframes mark-in {
-  from {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.mark svg {
-  width: 2.1rem;
-  height: 2.1rem;
-  fill: none;
-  stroke: var(--cream);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .brand {
   margin: 0;
-  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(3.4rem, 12vw, 4.25rem);
   font-weight: 700;
-  font-size: clamp(2.8rem, 10vw, 3.6rem);
   letter-spacing: -0.03em;
-  line-height: 0.95;
+  line-height: 1;
   color: var(--pine);
 }
 
 .lede {
-  margin: 0.9rem 0 0;
-  font-size: 1.05rem;
-  line-height: 1.45;
+  margin: 1rem 0 0;
+  max-width: 18rem;
+  font-size: clamp(1.15rem, 4.2vw, 1.6rem);
+  line-height: 1.3;
+  font-weight: 400;
   color: var(--muted);
-  font-weight: 500;
 }
 
-.actions {
-  margin-top: 1.85rem;
+.mascot-wrap {
+  margin-top: 5.5rem;
+  animation: fade-up 0.55s ease 0.08s both;
+}
+
+.mascot {
+  width: 11.25rem;
+  height: 11.25rem;
+  position: relative;
+  display: grid;
+  place-items: center;
+  animation: bounce 0.9s ease-in-out infinite alternate;
+}
+
+.mascot-badge {
+  width: 100%;
+  height: 100%;
+  border-radius: 22%;
+  background: var(--sage);
+  display: grid;
+  place-items: center;
+  animation: sway 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10%);
+  }
+}
+
+@keyframes sway {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(3deg);
+  }
+}
+
+.lock {
+  width: 54%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
+  margin-top: -2%;
+}
+
+.shackle {
+  width: 66%;
+  height: 0.7rem;
+  border: 0.55rem solid #fff;
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+  margin-bottom: -0.1rem;
+}
+
+.lock-body {
+  width: 100%;
+  aspect-ratio: 1.35 / 1;
+  background: #fff;
+  border-radius: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  padding-top: 0.15rem;
+}
+
+.eyes {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.eye {
+  width: 0.22rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--pine);
+  animation: blink 3.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  42%,
+  48%,
+  100% {
+    transform: scaleY(1);
+  }
+  45% {
+    transform: scaleY(0.15);
+  }
+}
+
+.mouth {
+  width: 1.5rem;
+  height: 0.55rem;
+  border-bottom: 0.16rem solid var(--pine);
+  border-radius: 0 0 1rem 1rem;
+}
+
+.dock {
+  margin-top: auto;
+  width: 100%;
+  padding: 1.25rem 0 calc(1.25rem + env(safe-area-inset-bottom));
+  background: var(--cream);
+  animation: fade-up 0.55s ease 0.16s both;
 }
 
 .btn {
   appearance: none;
   border: 0;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
-  min-height: 3.15rem;
-  padding: 0.85rem 1.4rem;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 3.4rem;
+  padding: 0.95rem 1.25rem;
   border-radius: 999px;
-  background: var(--pine);
-  color: var(--cream);
+  background: var(--sage);
+  color: #fff;
   font: inherit;
-  font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 14px 30px rgba(43, 60, 49, 0.22);
-  transition: transform 0.18s ease, background 0.18s ease;
+  transition: background 0.18s ease, transform 0.18s ease;
 }
 
 .btn:hover {
-  background: #243329;
+  background: #536f5b;
   transform: translateY(-1px);
 }
 
@@ -159,15 +229,15 @@ html.ios-redirect .shell {
 }
 
 .hint {
-  margin: 0;
+  margin: 0.85rem 0 0;
   font-size: 0.9rem;
-  color: var(--muted);
+  color: rgba(43, 60, 49, 0.55);
   font-weight: 500;
 }
 
 .hint a {
   color: var(--sage);
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -175,18 +245,13 @@ html.ios-redirect .shell {
   text-decoration: underline;
 }
 
-.footer {
-  margin-top: 2.75rem;
-  font-size: 0.78rem;
-  color: rgba(43, 60, 49, 0.45);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .shell,
-  .mark {
+  .page,
+  .mascot-wrap,
+  .dock,
+  .mascot,
+  .mascot-badge,
+  .eye {
     animation: none;
   }
 
