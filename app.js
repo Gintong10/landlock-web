@@ -32,9 +32,6 @@
     return url.toString();
   }
 
-  const href = httpsStoreUrl();
   const storeLink = document.getElementById("store-link");
-  const openLink = document.getElementById("open-link");
-  if (storeLink) storeLink.href = href;
-  if (openLink) openLink.href = href;
+  if (storeLink) storeLink.href = httpsStoreUrl();
 })();
