@@ -8,50 +8,64 @@
   const titleEl = document.getElementById("title");
   const subtitleEl = document.getElementById("subtitle");
   const storeLink = document.getElementById("store-link");
+  const hintEl = document.querySelector(".hint");
 
   const params = new URLSearchParams(window.location.search);
-  const src = (params.get("src") || params.get("ct") || params.get("c") || "instagram_bio")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "_")
-    .replace(/[^a-z0-9_-]/g, "")
-    .slice(0, 40) || "instagram_bio";
-
-  function storeUrl() {
-    const url = new URL(STORE_HTTPS);
-    url.searchParams.set("mt", "8");
-    url.searchParams.set("ct", src);
-    if (PROVIDER_TOKEN) url.searchParams.set("pt", PROVIDER_TOKEN);
-    const medium = params.get("utm_medium");
-    const campaign = params.get("utm_campaign");
-    if (params.get("utm_source")) url.searchParams.set("utm_source", params.get("utm_source"));
-    if (medium) url.searchParams.set("utm_medium", medium);
-    if (campaign) url.searchParams.set("utm_campaign", campaign);
-    return url.toString();
-  }
-
   const ua = navigator.userAgent || "";
+
   const isIOS =
     /iPhone|iPad|iPod/i.test(ua) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isAndroid = /Android/i.test(ua);
   const isInstagram = /Instagram|Barcelona/i.test(ua);
   const isFacebook = /FBAN|FBAV|FB_IAB|Messenger/i.test(ua);
-  const href = storeUrl();
+  const isTikTok = /TikTok|Bytedance|ByteLocale|musical_ly|TTWebView/i.test(ua);
+  const isInApp = isInstagram || isFacebook || isTikTok;
 
+  function campaignToken() {
+    const raw =
+      params.get("src") ||
+      params.get("ct") ||
+      params.get("c") ||
+      (isTikTok ? "tiktok" : isInstagram ? "instagram_bio" : "web");
+    return (
+      String(raw)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_-]/g, "")
+        .slice(0, 40) || "web"
+    );
+  }
+
+  function storeUrl() {
+    const url = new URL(STORE_HTTPS);
+    url.searchParams.set("mt", "8");
+    url.searchParams.set("ct", campaignToken());
+    if (PROVIDER_TOKEN) url.searchParams.set("pt", PROVIDER_TOKEN);
+    return url.toString();
+  }
+
+  const href = storeUrl();
   if (storeLink) storeLink.href = href;
 
-  function showFallback() {
+  function showFallback(kind) {
     document.documentElement.classList.add("fallback");
     if (titleEl) {
       titleEl.innerHTML = 'Almost <span class="accent">there</span>';
     }
     if (subtitleEl) {
-      subtitleEl.textContent = "Tap below to grab the app.";
+      subtitleEl.textContent =
+        kind === "tiktok"
+          ? "TikTok blocks auto-open. Tap below, or ••• → Open in Safari."
+          : "Tap below to grab the app.";
+    }
+    if (hintEl && kind === "tiktok") {
+      hintEl.textContent = "Or tap ••• and choose Open in Browser";
     }
   }
 
-  function watchEscape(timeoutMs) {
+  function watchEscape(timeoutMs, kind) {
     let left = false;
     const markLeft = () => {
       left = true;
@@ -66,12 +80,10 @@
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pagehide", markLeft);
       window.removeEventListener("blur", markLeft);
-      if (!left) showFallback();
+      if (!left) showFallback(kind);
     }, timeoutMs);
   }
 
-  // Cloey-style Instagram breakout: ask Instagram to open Safari with the
-  // App Store URL. That avoids the blank white in-app browser page.
   function breakOutToStore() {
     if (isIOS && isInstagram) {
       window.location.href =
@@ -79,12 +91,15 @@
       return true;
     }
     if (isIOS && isFacebook) {
-      window.open("x-safari-" + href, "_blank");
+      window.location.href = "x-safari-" + href;
       return true;
     }
+    // TikTok / other iOS webviews: no reliable silent escape scheme.
+    // A user tap on the store link is the path that works.
     if (isAndroid) {
       const bare = href.replace(/^https?:\/\//, "");
-      window.location.href = `intent://${bare}#Intent;scheme=https;end`;
+      window.location.href =
+        "intent://" + bare + "#Intent;scheme=https;package=com.android.vending;end";
       return true;
     }
     return false;
@@ -92,25 +107,42 @@
 
   if (storeLink) {
     storeLink.addEventListener("click", (event) => {
-      if (!isInstagram && !isFacebook) return;
-      event.preventDefault();
-      breakOutToStore();
-      watchEscape(1500);
+      if (isIOS && (isInstagram || isFacebook)) {
+        event.preventDefault();
+        breakOutToStore();
+        watchEscape(1500, isInstagram ? "instagram" : "facebook");
+      }
+      // TikTok / Safari: let the normal https App Store link proceed.
     });
   }
 
+  // Already redirected from the head script (Safari / Chrome).
+  if (window.__LANDLOCK_REDIRECTED__) return;
+
   if (isIOS && isInstagram) {
     breakOutToStore();
-    watchEscape(1800);
+    watchEscape(1800, "instagram");
+    return;
+  }
+
+  if (isIOS && isFacebook) {
+    breakOutToStore();
+    watchEscape(1800, "facebook");
+    return;
+  }
+
+  if (isTikTok) {
+    // Try App Store HTTPS; TikTok often blocks this until the user taps.
+    window.location.replace(href);
+    watchEscape(1200, "tiktok");
     return;
   }
 
   if (isIOS || isAndroid) {
     window.location.replace(href);
-    watchEscape(1800);
+    watchEscape(1800, "mobile");
     return;
   }
 
-  // Desktop: keep the landing page visible with the store button.
-  showFallback();
+  showFallback("desktop");
 })();

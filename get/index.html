@@ -21,7 +21,43 @@
   <link rel="canonical" href="https://landlock.app/get" />
   <link rel="icon" href="../assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="stylesheet" href="../styles.css?v=6" />
+  <link rel="stylesheet" href="../styles.css?v=7" />
+  <script>
+    (function () {
+      var PROVIDER_TOKEN = "";
+      var ua = navigator.userAgent || "";
+      var ios =
+        /iPhone|iPad|iPod/i.test(ua) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      var android = /Android/i.test(ua);
+      var inApp =
+        /Instagram|Barcelona|FBAN|FBAV|FB_IAB|Messenger|TikTok|Bytedance|ByteLocale|musical_ly|TTWebView/i.test(
+          ua
+        );
+      if ((!ios && !android) || inApp) return;
+
+      var params = new URLSearchParams(location.search);
+      var ct = (
+        params.get("src") ||
+        params.get("ct") ||
+        params.get("c") ||
+        "web"
+      )
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_-]/g, "")
+        .slice(0, 40) || "web";
+
+      var q = "mt=8&ct=" + encodeURIComponent(ct);
+      if (PROVIDER_TOKEN) q += "&pt=" + encodeURIComponent(PROVIDER_TOKEN);
+      var href =
+        "https://apps.apple.com/us/app/landlock/id6789275579?" + q;
+
+      window.__LANDLOCK_REDIRECTED__ = true;
+      location.replace(href);
+    })();
+  </script>
 </head>
 <body>
   <main class="page">
@@ -29,7 +65,7 @@
       <div class="icon-wrap">
         <img
           class="app-icon"
-          src="../assets/app-logo.png?v=6"
+          src="../assets/app-logo.png?v=7"
           width="512"
           height="512"
           alt="Landlock app icon"
@@ -48,7 +84,7 @@
       <a
         class="btn"
         id="store-link"
-        href="https://apps.apple.com/us/app/landlock/id6789275579?mt=8&ct=instagram_bio"
+        href="https://apps.apple.com/us/app/landlock/id6789275579?mt=8&ct=tiktok"
       >
         Get Landlock
       </a>
@@ -56,6 +92,6 @@
     </div>
   </main>
 
-  <script src="../app.js?v=6"></script>
+  <script src="../app.js?v=7"></script>
 </body>
 </html>
