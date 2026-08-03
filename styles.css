@@ -43,12 +43,22 @@ html.ios-redirect .page {
   width: min(100%, 26rem);
   margin: 0 auto;
   padding:
-    max(3.75rem, 10vh) 1.5rem
+    max(2rem, 6vh) 1.5rem
     calc(1.35rem + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+.brand-block {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 1rem;
 }
 
 .icon-wrap {
@@ -147,7 +157,7 @@ html.ios-redirect .page {
   .hero,
   .icon-wrap,
   .dock {
-    animation: none;
+    animation: none !important;
   }
 
   .btn {
