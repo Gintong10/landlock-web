@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const PROVIDER_TOKEN = "";
+  const PROVIDER_TOKEN = "128914084";
   const APP_ID = "6789275579";
   const STORE_HTTPS = `https://apps.apple.com/us/app/landlock/id${APP_ID}`;
 
